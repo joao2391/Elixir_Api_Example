@@ -12,8 +12,8 @@ defmodule ApiExample.User do
   #@derive Jason.Encoder
   #defstruct [:id, :name, :email, :password, :stooge]
 
-  def changeset(users, params \\ %{}) do
-    users
+  def changeset(user, params \\ %{}) do
+    user
     |> Ecto.Changeset.cast(params, [:name, :email, :password, :stooge])
   end
 

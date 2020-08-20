@@ -1,4 +1,7 @@
 defmodule ApiExample.UserController do
+  @moduledoc """
+  Creating an user
+  """
   use ApiExampleWeb, :controller
 
   def index(conn, _params) do
@@ -13,17 +16,14 @@ defmodule ApiExample.UserController do
     json conn, user
   end
 
-  def create(conn, %{"name" => name, "email" => email, "password" => password, "stooge" => stooge}) do
-
-    %ApiExample.User{
-      name: name,
-      email: email,
-      password: password,
-      stooge: stooge
-    }
-    user = ApiExample.Repo.insert!(ApiExample.User)
-
-    conn
-    |> send_resp(200, "ok")
+  def create(conn, params) do
+    changeset = ApiExample.User.changeset(%ApiExample.User{}, params)
+      case ApiExample.Repo.insert(changeset) do
+      {:ok, user} ->
+        json conn |> put_status(:created), user
+      {:error, _changeset} ->
+        json conn |> put_status(:bad_request), %{errors: ["unable to create user"] }
+      end
   end
+
 end
