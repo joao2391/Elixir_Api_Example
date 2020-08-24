@@ -26,4 +26,47 @@ defmodule ApiExample.UserController do
       end
   end
 
+  # web/controllers/user_controller.ex
+  def update(conn, %{"id" => id} = params) do
+    user = ApiExample.Repo.get(ApiExample.User, id)
+    if user do
+      perform_update(conn, user, params)
+    else
+      json conn |> put_status(:not_found),
+                   %{errors: ["invalid user"]}
+    end
+  end
+
+  def delete(conn, %{"id" => id} = params) do
+    user = ApiExample.Repo.get(ApiExample.User, id)
+    if user do
+      perform_delete(conn, user, params)
+    else
+      json conn |> put_status(:not_found),
+                   %{erros: ["Invalid User"]}
+    end
+  end
+
+defp perform_delete(conn, user, params) do
+  changeset = ApiExample.User.changeset(user, params)
+  case ApiExample.Repo.delete(changeset) do
+    {:ok, user} ->
+      json conn |> put_status(:ok), user
+    {:error, _result} ->
+      json conn |> put_status(:bad_request),
+                   %{errors: ["unable to update user"]}
+  end
+end
+
+defp perform_update(conn, user, params) do
+  changeset = ApiExample.User.changeset(user, params)
+  case ApiExample.Repo.update(changeset) do
+    {:ok, user} ->
+      json conn |> put_status(:ok), user
+    {:error, _result} ->
+      json conn |> put_status(:bad_request),
+                   %{errors: ["unable to update user"]}
+  end
+end
+
 end

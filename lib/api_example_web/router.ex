@@ -19,6 +19,8 @@ defmodule ApiExampleWeb.Router do
     get "/users", UserController, :index
     get "/users/:id", UserController, :show
     post "/users", UserController, :create
+    put "/users/:id", UserController, :update
+    delete "/users/:id", UserController, :delete
 end
 
 end
